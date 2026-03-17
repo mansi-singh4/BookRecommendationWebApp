@@ -27,7 +27,7 @@ function Home() {
       `https://bookrecommendationwebapp.onrender.com/recommend/${title}`
 );
 
-    setBooks(res.data);
+    setBooks(Array.isArray(res.data) ? res.data : []);
     setSuggestions([]);
     setQuery(title);
   };
