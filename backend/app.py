@@ -18,12 +18,27 @@ def home():
     return {"message":"Book Recommender API"}
 
 @app.get("/recommend/{book}")
-
 def get_recommendations(book: str):
+
+    matched = df[df["book_title"].str.lower() == book.lower()]
+
+    if matched.empty:
+        return {"book": None, "recommendations": []}
+
+    book_data = matched.iloc[0]
 
     results = recommend(book)
 
-    return results
+    return {
+        "book": {
+            "title": book_data["book_title"],
+            "author": book_data["book_authors"],
+            "image": book_data["image_url"],
+            "description": book_data["book_desc"],
+            "rating": book_data["book_rating"]
+        },
+        "recommendations": results
+    }
 
 
 @app.get("/search")
