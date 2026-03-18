@@ -29,7 +29,7 @@ function Home() {
 
     <div className="container">
 
-      <h1>💗 Book Recommender</h1>
+      <h1>💗 Your next book, sorted!</h1>
 
       <input
         type="text"
