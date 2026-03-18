@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import axios from "axios";
 import BookCard from "../components/BookCard";
+import { useNavigate } from "react-router-dom";
 
 function Home() {
+
+  const navigate = useNavigate();  // ✅ FIXED
 
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
@@ -15,21 +18,11 @@ function Home() {
     if(text.length > 2){
 
       const res = await axios.get(
-    `https://bookrecommendationwebapp.onrender.com/search?query=${text}`      );
+        `https://bookrecommendationwebapp.onrender.com/search?query=${encodeURIComponent(text)}`
+      );
 
       setSuggestions(res.data);
     }
-  };
-
-  const getRecommendations = async(title)=>{
-
-    const res = await axios.get(
-      `https://bookrecommendationwebapp.onrender.com/recommend/${title}`
-);
-
-    setBooks(Array.isArray(res.data) ? res.data : []);
-    setSuggestions([]);
-    setQuery(title);
   };
 
   return (
@@ -49,7 +42,7 @@ function Home() {
         {suggestions.map((s,i)=>(
           <div
             key={i}
-            onClick={()=>getRecommendations(s)}
+            onClick={() => navigate(`/book/${encodeURIComponent(s)}`)}
             className="suggestion"
           >
             {s}
@@ -58,11 +51,9 @@ function Home() {
       </div>
 
       <div className="book-grid">
-
         {books.map((b,i)=>(
           <BookCard key={i} book={b}/>
         ))}
-
       </div>
 
     </div>
