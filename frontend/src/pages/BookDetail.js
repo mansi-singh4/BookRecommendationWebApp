@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import BookCard from "../components/BookCard";
 
-function BookDetail(){
+function BookDetail() {
 
   const { title } = useParams();
   const navigate = useNavigate();
@@ -15,26 +15,44 @@ function BookDetail(){
 
     const fetchBook = async () => {
 
-      const decodedTitle = decodeURIComponent(title);
+      try {
+        const decodedTitle = decodeURIComponent(title);
 
-      const res = await axios.get(
-        `https://bookrecommendationwebapp.onrender.com/recommend/${decodedTitle}`
-      );
+        const res = await axios.get(
+          `https://bookrecommendationwebapp.onrender.com/recommend/${encodeURIComponent(decodedTitle)}`
+        );
 
-      setBook(res.data.book);
-      setSimilar(res.data.recommendations);
+        if (!res.data || !res.data.book) {
+          console.error("Book not found or API error");
+          return;
+        }
+
+        setBook(res.data.book);
+        setSimilar(res.data.recommendations || []);
+
+      } catch (error) {
+        console.error("Error fetching book:", error);
+      }
     };
 
     fetchBook();
 
   }, [title]);
 
-  if(!book) return <p>Loading...</p>;
+  // Loading state
+  if (!book) {
+    return (
+      <div className="container">
+        <p style={{ color: "white" }}>Loading recommendations... ⏳</p>
+      </div>
+    );
+  }
 
-  return(
+  return (
 
     <div className="container">
 
+      {/* Back Button */}
       <button
         className="back-btn"
         onClick={() => navigate("/")}
@@ -42,9 +60,13 @@ function BookDetail(){
         ← Back to Search
       </button>
 
+      {/* Main Book */}
       <div className="detail">
 
-        <img src={book.image} alt={book.title}/>
+        <img
+          src={book.image || "https://via.placeholder.com/150"}
+          alt={book.title}
+        />
 
         <div>
           <h1>{book.title}</h1>
@@ -55,11 +77,12 @@ function BookDetail(){
 
       </div>
 
+      {/* Similar Books */}
       <h2>Similar Books</h2>
 
       <div className="book-grid">
-        {similar.map((b,i)=>(
-          <BookCard key={i} book={b}/>
+        {similar.map((b, i) => (
+          <BookCard key={i} book={b} />
         ))}
       </div>
 
