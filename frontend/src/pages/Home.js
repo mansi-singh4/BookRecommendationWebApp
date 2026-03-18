@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import BookCard from "../components/BookCard";
+// import BookCard from "../components/BookCard";
 import { useNavigate } from "react-router-dom";
 
 function Home() {
@@ -9,7 +9,7 @@ function Home() {
 
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
-  const [books, setBooks] = useState([]);
+  // const [books, setBooks] = useState([]);
 
   const searchBooks = async(text)=>{
 
@@ -50,11 +50,11 @@ function Home() {
         ))}
       </div>
 
-      <div className="book-grid">
+      {/* <div className="book-grid">
         {books.map((b,i)=>(
           <BookCard key={i} book={b}/>
         ))}
-      </div>
+      </div> */}
 
     </div>
   );
